@@ -2,9 +2,9 @@ import 'dotenv/config'; // Load environment variables from .env file
 import express from 'express';
 import { clerkMiddleware } from '@clerk/express';
 import cors from 'cors';
+import appRoutes from './routes/index.js';
 import dashboardRoutes from './routes/dashboard.js';
 import plantRoutes from './routes/plantlibrary.js';
-import appRoutes from './routes/index.js';
 import pushRoutes from './routes/push.js';
 import { startScheduler } from './jobs/scheduler.js';
 
