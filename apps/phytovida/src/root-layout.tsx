@@ -1,20 +1,12 @@
-import { useEffect } from 'react';
 import { ClerkProvider } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router';
 import AppRoutes from './routes';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { registerServiceWorker } from '@/lib/registerServiceWorker';
-import { subscribeToPush } from '@/lib/subscribeToPush';
 
 export default function App() {
   const navigate = useNavigate();
   const queryClient = new QueryClient();
-
-  useEffect(() => {
-    registerServiceWorker();
-    subscribeToPush();
-  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -15,12 +15,12 @@ async function createPushSubscription(reg: ServiceWorkerRegistration) {
   });
 }
 
-async function sendSubscriptionToServer(sub: PushSubscription) {
+async function sendSubscriptionToServer(sub: PushSubscription, userId: string) {
   try {
     return await fetch(`${import.meta.env.VITE_API_URL}/push/subscribe`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(sub),
+      body: JSON.stringify({ userId, subscription: sub }),
     });
   } catch (err) {
     console.error('Network error while sending subscription:', err);
@@ -28,26 +28,34 @@ async function sendSubscriptionToServer(sub: PushSubscription) {
   }
 }
 
-export async function subscribeToPush() {
+export async function subscribeToPush(userId: string) {
   const reg = await navigator.serviceWorker.ready;
-
   let sub = await reg.pushManager.getSubscription();
 
   // Create subscription
   if (!sub) sub = await createPushSubscription(reg);
 
   // Send to server
-  let res = await sendSubscriptionToServer(sub);
+  let res = await sendSubscriptionToServer(sub, userId);
 
   // Re-create if server rejected
   if (!res.ok) {
     console.warn('Server rejected subscription, re-subscribing...');
-
     await sub.unsubscribe();
-    const newSub = await createPushSubscription(reg);
 
-    res = await sendSubscriptionToServer(newSub);
+    const newSub = await createPushSubscription(reg);
+    res = await sendSubscriptionToServer(newSub, userId);
   }
 
   console.log('✅ subscribed');
+}
+
+export async function ensurePushSubscription(userId: string) {
+  const reg = await navigator.serviceWorker.ready;
+  const sub = await reg.pushManager.getSubscription();
+
+  if (!sub) {
+    await subscribeToPush(userId);
+    return;
+  }
 }

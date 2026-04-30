@@ -1,22 +1,27 @@
 import type { Request, Response } from 'express';
-import { addSubscription, sendPush } from '../services/push.js';
+import { addSubscription } from '../services/push.js';
 import { sendResponse } from '../helper/response.js';
 
 // Subscribe
-export const subscribeController = (req: Request, res: Response) => {
+export const subscribeController = async (req: Request, res: Response) => {
   try {
-    if (!req.body?.endpoint) {
+    const { userId, subscription } = req.body;
+
+    if (!userId || !subscription?.endpoint) {
       return sendResponse(res, 400, {
         error: true,
-        message: 'Subscription object is missing endpoint',
+        message: 'Invalid subscription payload',
         success: false,
       });
     }
 
-    addSubscription(req.body);
+    await addSubscription(userId, subscription);
 
     return sendResponse(res, 201, {
-      error: false,
+      data: {
+        userId,
+        endpoint: subscription.endpoint,
+      },
       message: 'Subscribed',
       success: true,
     });
@@ -26,37 +31,6 @@ export const subscribeController = (req: Request, res: Response) => {
     return sendResponse(res, 500, {
       error: true,
       message: 'Subscribe failed',
-      success: false,
-    });
-  }
-};
-
-// Send push
-export const sendController = async (req: Request, res: Response) => {
-  try {
-    const { title, body } = req.body;
-
-    if (!title || !body) {
-      return sendResponse(res, 400, {
-        error: true,
-        message: 'Title and body are required',
-        success: false,
-      });
-    }
-
-    await sendPush(req.body);
-
-    return sendResponse(res, 200, {
-      error: false,
-      message: 'Push sent',
-      success: true,
-    });
-  } catch (err) {
-    console.error('SEND_PUSH_ERROR:', err);
-
-    return sendResponse(res, 500, {
-      error: true,
-      message: 'Send failed',
       success: false,
     });
   }

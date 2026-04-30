@@ -1,13 +1,21 @@
 import { useState } from 'react';
+import { useUser } from '@clerk/clerk-react';
+import { subscribeToPush } from '@/lib/subscribeToPush';
 
 export default function WaterNotification() {
+  const { user, isSignedIn } = useUser();
   const [permission, setPermission] = useState(Notification.permission);
 
   const requestPermission = async () => {
-    await Notification.requestPermission();
-    setPermission(Notification.permission);
+    const result = await Notification.requestPermission();
+    setPermission(result);
+
+    if (result === 'granted' && user?.id) {
+      await subscribeToPush(user.id);
+    }
   };
 
+  if (!isSignedIn) return null;
   if (permission !== 'default') return null;
 
   return (

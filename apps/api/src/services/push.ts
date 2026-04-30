@@ -1,5 +1,7 @@
 import webpush from '../config/webpush.js';
-import type { PushSubscription } from 'web-push';
+import { db } from '../db/index.js';
+import { pushNotifications, pushSubscriptions } from '../db/schema.js';
+import { eq, sql } from 'drizzle-orm';
 
 type PushPayload = {
   title: string;
@@ -7,33 +9,73 @@ type PushPayload = {
   icon?: string;
 };
 
-const subscriptions = new Map<string, PushSubscription>();
-
-export const addSubscription = (sub: PushSubscription) => {
-  if (!sub?.endpoint) return;
-  subscriptions.set(sub.endpoint, sub);
+export const addSubscription = async (userId: string, sub: any) => {
+  await db
+    .insert(pushSubscriptions)
+    .values({
+      userId,
+      endpoint: sub.endpoint,
+      p256dh: sub.keys.p256dh,
+      auth: sub.keys.auth,
+    })
+    .onConflictDoUpdate({
+      target: pushSubscriptions.endpoint,
+      set: {
+        p256dh: sub.keys.p256dh,
+        auth: sub.keys.auth,
+      },
+    });
 };
 
-export const sendPush = async (payload: PushPayload) => {
-  if (subscriptions.size === 0) {
-    console.log('No subscriptions');
-    return;
-  }
+export const sendPush = async (
+  sub: {
+    endpoint: string;
+    keys: {
+      p256dh: string;
+      auth: string;
+    };
+  },
+  payload: PushPayload,
+) => {
+  try {
+    await webpush.sendNotification(sub, JSON.stringify(payload));
+    console.log('✅ sent to', sub.endpoint);
+    return true;
+  } catch (err: any) {
+    console.error('PUSH ERROR', err);
 
-  for (const [endpoint, sub] of subscriptions.entries()) {
-    try {
-      await webpush.sendNotification(sub, JSON.stringify(payload));
-      console.log('✅ sent to', endpoint);
-    } catch (err: any) {
-      console.error('PUSH ERROR', {
-        endpoint,
-        status: err.statusCode,
-        body: err.body,
-      });
-
-      if (err.statusCode === 404 || err.statusCode === 410) {
-        subscriptions.delete(endpoint);
-      }
+    if (err.statusCode === 404 || err.statusCode === 410) {
+      await db
+        .delete(pushSubscriptions)
+        .where(eq(pushSubscriptions.endpoint, sub.endpoint));
     }
+    return false;
   }
+};
+
+export const updateNotificationDate = async (
+  plantId: string,
+  userId: string,
+  endpoint: string,
+) => {
+  await db
+    .insert(pushNotifications)
+    .values({
+      plantId,
+      userId,
+      endpoint,
+      type: 'watering',
+      lastSentDate: sql`CURRENT_DATE`,
+    })
+    .onConflictDoUpdate({
+      target: [
+        pushNotifications.plantId,
+        pushNotifications.userId,
+        pushNotifications.endpoint,
+        pushNotifications.type,
+      ],
+      set: {
+        lastSentDate: sql`CURRENT_DATE`,
+      },
+    });
 };

@@ -1,4 +1,6 @@
-export async function registerServiceWorker() {
+import { ensurePushSubscription } from './subscribeToPush';
+
+export async function registerServiceWorker(userId?: string) {
   if (!('serviceWorker' in navigator)) {
     console.warn('⚠️ Service Worker not supported');
     return null;
@@ -6,9 +8,7 @@ export async function registerServiceWorker() {
 
   try {
     const registration = await navigator.serviceWorker.register('/sw.js');
-    console.log('Service Worker registered:', registration);
-
-    handleSWUpdate(registration);
+    handleSWUpdate(registration, userId);
 
     return registration;
   } catch (err) {
@@ -17,18 +17,19 @@ export async function registerServiceWorker() {
   }
 }
 
-function handleSWUpdate(registration: ServiceWorkerRegistration) {
+function handleSWUpdate(
+  registration: ServiceWorkerRegistration,
+  userId?: string,
+) {
   registration.onupdatefound = () => {
     const newWorker = registration.installing;
 
     if (!newWorker) return;
 
-    newWorker.onstatechange = () => {
+    newWorker.onstatechange = async () => {
       if (newWorker.state === 'installed') {
-        if (navigator.serviceWorker.controller) {
-          console.log('Service Worker update available (refresh page)');
-        } else {
-          console.log('Service Worker installed for first time');
+        if (userId) {
+          await ensurePushSubscription(userId);
         }
       }
     };
