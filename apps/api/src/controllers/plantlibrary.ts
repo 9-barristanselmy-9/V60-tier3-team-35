@@ -73,7 +73,7 @@ export const getPlantsData = async (req: Request, res: Response) => {
           imageUrl: cloudinaryUrl,
           watering: plant.watering ?? null,
           sunlight: plant.sunlight?.join(', ') ?? null,
-          hardiness: plant.hardiness ?? null,
+          hardiness: plant.hardiness ? JSON.stringify(plant.hardiness) : null,
 
         };
       })

@@ -32,7 +32,7 @@ export interface PerenualPlant {
 	id: number;
 	common_name: string;
 	default_image?: { medium_url: string };
-	hardiness?: string;
+	hardiness?: { min: string; max: string };
 	watering?: string;
 	sunlight?: string[];
 }
