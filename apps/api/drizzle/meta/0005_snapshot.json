@@ -1,6 +1,6 @@
 {
-  "id": "c7924478-d2f8-4125-b2e4-18f682abad91",
-  "prevId": "8884de41-5fdd-4e80-9eb4-1ff234025218",
+  "id": "2a51650d-988b-446e-aead-80dcb6c3efb1",
+  "prevId": "c7924478-d2f8-4125-b2e4-18f682abad91",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -84,15 +84,21 @@
           "primaryKey": false,
           "notNull": false
         },
-        "min_temp": {
-          "name": "min_temp",
-          "type": "integer",
+        "watering": {
+          "name": "watering",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "max_temp": {
-          "name": "max_temp",
-          "type": "integer",
+        "sunlight": {
+          "name": "sunlight",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hardiness": {
+          "name": "hardiness",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         }
@@ -276,6 +282,71 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.source_sync": {
+      "name": "source_sync",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_fetched_page": {
+          "name": "last_fetched_page",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "total_pages": {
+          "name": "total_pages",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'idle'"
+        },
+        "last_run_at": {
+          "name": "last_run_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "error_message": {
+          "name": "error_message",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "source_sync_source_unique": {
+          "name": "source_sync_source_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "source"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.user_settings": {
       "name": "user_settings",
       "schema": "",
@@ -324,19 +395,37 @@
           "primaryKey": false,
           "notNull": false
         },
+        "phase": {
+          "name": "phase",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'planning'"
+        },
         "watering_frequency": {
           "name": "watering_frequency",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
-          "default": 7
+          "notNull": false
         },
         "last_watered_date": {
           "name": "last_watered_date",
           "type": "timestamp",
           "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
           "notNull": false,
           "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},

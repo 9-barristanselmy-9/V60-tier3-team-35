@@ -29,22 +29,25 @@ export interface Pagination {
 
 // Perenual API
 export interface PerenualPlant {
-  id: number;
-  common_name: string;
-  default_image?: { medium_url: string };
-  hardiness?: { min: string; max: string };
+	id: number;
+	common_name: string;
+	default_image?: { medium_url: string };
+	hardiness?: string;
+	watering?: string;
+	sunlight?: string[];
 }
 
 export interface PerenualResponse {
-  data: PerenualPlant[];
-  last_page: number;
+	data: PerenualPlant[];
+	last_page: number;
 }
 
 // Plant DB / API
 export interface DbPlant {
-    id: string;
-    name: string;
-    imageUrl: string | null;
-    minTemp: number | null;
-    maxTemp: number | null;
+	id: string;
+	name: string;
+	imageUrl: string | null;
+	watering: string | null;
+	sunlight: string | null;
+	hardiness: string | null;
 }

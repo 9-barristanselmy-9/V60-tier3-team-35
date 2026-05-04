@@ -71,8 +71,9 @@ export const getPlantsData = async (req: Request, res: Response) => {
           id: String(plant.id),
           name: plant.common_name,
           imageUrl: cloudinaryUrl,
-          minTemp: plant.hardiness?.min ? parseInt(plant.hardiness.min) : null,
-          maxTemp: plant.hardiness?.max ? parseInt(plant.hardiness.max) : null,
+          watering: plant.watering ?? null,
+          sunlight: plant.sunlight?.join(', ') ?? null,
+          hardiness: plant.hardiness ?? null,
 
         };
       })
@@ -86,8 +87,9 @@ export const getPlantsData = async (req: Request, res: Response) => {
         set: {
           name: sql`excluded.name`,
           imageUrl: sql`excluded.image_url`,
-          minTemp: sql`excluded.min_temp`,
-          maxTemp: sql`excluded.max_temp`,
+          watering: sql`excluded.watering`,
+          sunlight: sql`excluded.sunlight`,
+          hardiness: sql`excluded.hardiness`,
         },
       });
 
@@ -111,7 +113,7 @@ export const getPlantsData = async (req: Request, res: Response) => {
       .update(sourceSync)
       .set({ status: "error", errorMessage: (error as Error).message })
       .where(eq(sourceSync.source, "perenual"));
-
+    console.error("getPlants error:", error);
     res.status(500).json({ error: "Failed to fetch plants from db" });
   }
 

@@ -18,8 +18,9 @@ export const plants = pgTable('plants', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   imageUrl: text('image_url'),
-  minTemp: integer('min_temp'),
-  maxTemp: integer('max_temp'),
+  watering: text('watering'),
+  sunlight: text('sunlight'),
+  hardiness: text('hardiness'),
 });
 
 export const usersPlants = pgTable('users_plants', {
