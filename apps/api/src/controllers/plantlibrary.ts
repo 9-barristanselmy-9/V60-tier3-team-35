@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { db } from "../db/index.js";
-import { sql, eq } from "drizzle-orm";
+import { sql, eq, ilike } from "drizzle-orm";
 import { plants, sourceSync } from "../db/schema.js";
 import type { PerenualPlant, PerenualResponse } from "@repo/types";
 
@@ -105,24 +105,25 @@ export const getPlantsData = async (req: Request, res: Response) => {
 export const getPlants = async (req: Request, res: Response) => {
 
     try {
-        // parse page and limit from req query
         const page = Number(req.query.page ?? 1);
         const limit = Number(req.query.limit ?? 10);
+        const search = (req.query.search as string) ?? "";
 
-        // compute offset
         const offset = (page - 1) * limit;
 
-        // total count 
+        const whereClause = search ? ilike(plants.name, `%${search}%`) : undefined;
+
         const totalResult = await db
             .select({ count: sql<number>`count(*)` })
-            .from(plants);
+            .from(plants)
+            .where(whereClause);
 
         if (!totalResult[0]) {
             throw new Error("Count query returned no rows");
         }
         const total = Number(totalResult[0].count);
 
-        const allPlants = await db.select().from(plants).limit(limit).offset(offset);
+        const allPlants = await db.select().from(plants).where(whereClause).limit(limit).offset(offset);
 
         const hasNextPage = offset + limit < total;
 
