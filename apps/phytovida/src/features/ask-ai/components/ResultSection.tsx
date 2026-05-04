@@ -99,9 +99,8 @@ export function ResultSection({
               >
                 {diagnosis.isHealthy
                   ? `${diagnosis.healthProbability}% healthy`
-                  : `${topDisease?.confidence}%`}
-              </Badge>
-            </div>
+                  : `${topDisease?.confidence ?? 0}%`}
+              </Badge>            </div>
 
             {/* Confidence bar — only show when there's a disease */}
             {!diagnosis.isHealthy && topDisease && (
