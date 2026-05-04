@@ -3,6 +3,7 @@ import { db } from "../db/index.js";
 import { sql, eq, ilike } from "drizzle-orm";
 import { plants, sourceSync } from "../db/schema.js";
 import type { PerenualPlant, PerenualResponse } from "@repo/types";
+import { cloudinaryUpload } from "../utils/cloudinaryUpload";
 
 const PERENUAL_BASE_URL = "https://perenual.com/api";
 const API_KEY = process.env.PERENUAL_API_KEY;
