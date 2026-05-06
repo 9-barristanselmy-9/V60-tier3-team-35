@@ -7,7 +7,6 @@ import {
   uniqueIndex,
   date,
 } from 'drizzle-orm/pg-core';
-import { createDeflate } from 'node:zlib';
 
 export const userSettings = pgTable('user_settings', {
   userId: text('user_id').primaryKey(),
@@ -18,8 +17,9 @@ export const plants = pgTable('plants', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   imageUrl: text('image_url'),
-  minTemp: integer('min_temp'),
-  maxTemp: integer('max_temp'),
+  watering: text('watering'),
+  sunlight: text('sunlight'),
+  hardiness: text('hardiness'),
 });
 
 export const usersPlants = pgTable('users_plants', {
@@ -81,12 +81,3 @@ export const pushNotifications = pgTable(
     ),
   }),
 );
-export const sourceSync = pgTable('source_sync', {
-  id: serial('id').primaryKey(),
-  source: text('source').notNull().unique(), // 'perenual' (but can reuse for different APIs)
-  lastFetchedPage: integer('last_fetched_page').notNull().default(0),
-  totalPages: integer('total_pages'),
-  status: text('status').notNull().default('idle'),
-  lastRunAt: timestamp('last_run_at'),
-  errorMessage: text('error_message'),
-});

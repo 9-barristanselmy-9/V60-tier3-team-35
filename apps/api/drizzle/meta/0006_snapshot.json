@@ -1,6 +1,6 @@
 {
-  "id": "2a51650d-988b-446e-aead-80dcb6c3efb1",
-  "prevId": "c7924478-d2f8-4125-b2e4-18f682abad91",
+  "id": "581fb856-a955-4b00-8119-f0ea22ac1ae2",
+  "prevId": "2a51650d-988b-446e-aead-80dcb6c3efb1",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -298,18 +298,12 @@
           "primaryKey": false,
           "notNull": true
         },
-        "last_fetched_page": {
-          "name": "last_fetched_page",
+        "last_fetched_id": {
+          "name": "last_fetched_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "default": 0
-        },
-        "total_pages": {
-          "name": "total_pages",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
         },
         "status": {
           "name": "status",

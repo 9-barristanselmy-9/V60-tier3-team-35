@@ -2,7 +2,7 @@ import { Button } from "@repo/ui/components/button";
 import { useApiClient } from "@/lib/authFetch";
 import type { ApiPaginatedResponse, DbPlant } from "@repo/types";
 import { useCallback, useEffect, useRef, useState } from "react";
-import CreateUserPlantForm from "@/components/UserPlantCreation/CreateUserPlantForm";
+import { PlantLibraryCard } from "@/components/PlantLibraryCard";
 import { SearchBar } from '../components/SearchBar'
 
 
@@ -89,7 +89,7 @@ export default function PlantLibrary() {
 
     return (
         <section className="w-full space-y-10  md:mt-32 ">
-            <div className="h-full grid place-content-center gap-10">
+            <div className="h-full grid max-w-5xl mx-auto w-full flex flex-col gap-10">
                 <h1 className="flex justify-center text-headline md:text-8xl">
                     Plant Library
                 </h1>
@@ -104,14 +104,10 @@ export default function PlantLibrary() {
                 {error && <p className="text-red-500 text-center">{error}</p>}
 
                 {allPlants.length > 0 && (
-                    <ul className="grid grid-col-1 md:grid-cols-2 gap-4">
+                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {allPlants.map((plant) => (
-                            <li key={plant.id} className="border rounded p-4">
-                                {plant.imageUrl && (
-                                    <img src={plant.imageUrl} alt={plant.name} className="w-full rounded mb-2" />
-                                )}
-                                <p className="font-semibold">{plant.name}</p>
-                                <CreateUserPlantForm plantId={plant.id} name={plant.name} />
+                            <li key={plant.id}>
+                                <PlantLibraryCard {...plant} />
                             </li>
                         ))}
                     </ul>
