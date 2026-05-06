@@ -73,8 +73,9 @@ export const readUserPlantsController = async (req: Request, res: Response) => {
         lastWateredDate: usersPlants.lastWateredDate,
         plantName: plants.name,
         plantImg: plants.imageUrl,
-        minTemp: plants.minTemp,
-        maxTemp: plants.maxTemp,
+        watering: plants.watering,
+        sunlight: plants.sunlight,
+        hardiness: plants.hardiness,
       })
       .from(usersPlants)
       .leftJoin(plants, eq(usersPlants.plantId, plants.id))
@@ -128,8 +129,9 @@ export const readUserPlantController = async (req: Request, res: Response) => {
         lastWateredDate: usersPlants.lastWateredDate,
         plantName: plants.name,
         plantImg: plants.imageUrl,
-        minTemp: plants.minTemp,
-        maxTemp: plants.maxTemp,
+        watering: plants.watering,
+        sunlight: plants.sunlight,
+        hardiness: plants.hardiness,
       })
       .from(usersPlants)
       .leftJoin(plants, eq(usersPlants.plantId, plants.id))
