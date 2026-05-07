@@ -7,7 +7,7 @@ export default function Home() {
 
 	return (
 		<section className="w-full space-y-10  md:mt-32">
-			<div className="h-full grid max-w-5xl mx-auto w-full flex flex-col gap-10">
+			<div className="h-full grid max-w-5xl mx-auto w-full flex flex-col gap-10 px-5">
 				<h1 className="flex text-center text-headline md:text-8xl">
 					Now Every Plant Can Thrive
 				</h1>
@@ -67,15 +67,15 @@ export default function Home() {
 				</div>
 
 				<div className="flex flex-col items-center gap-4">
-					<div className="flex flex-row items-center gap-8">
-						<div className="w-1/2">
+					<div className="flex flex-col md:flex-row items-center gap-8">
+						<div className="w-full md: w-1/2">
 							<img
 								src="/homepage_plant.jpeg"
 								alt="Two dark green leaves against a grey background"
 								className="rounded-2xl object-cover"
 							/>
 						</div>
-						<div className="w-1/2">
+						<div className="w-full md: w-1/2">
 							<h3>Monstera deliciosa</h3>
 							<h4 className="text-accent6 pb-8">Swiss cheese plant</h4>
 							<p>Native to the tropical rainforests of Central America, the monstera deliciosa is one of the most recognisable houseplants in the world. It's beloved for its large, glossy, heart-shaped leaves that develop distinctive splits and holes (called fenestrations) as the plant matures — hence the "Swiss cheese" nickname.</p>
