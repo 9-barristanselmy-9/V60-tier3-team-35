@@ -3,7 +3,7 @@ import { Droplets, Thermometer, Sun } from "lucide-react";
 import CreateUserPlantForm from "@/components/UserPlantCreation/CreateUserPlantForm";
 import type { DbPlant } from "@repo/types";
 
-function parseHardiness(hardiness: string | null | undefined) {
+export function parseHardiness(hardiness: string | null | undefined) {
     if (!hardiness) return null;
     try {
         return JSON.parse(hardiness) as { min: string; max: string };
