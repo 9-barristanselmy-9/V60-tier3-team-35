@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/clerk-react";
-import { Button } from "@repo/ui/components/button";
 import { LocationCard } from "../components/LocationCard";
 import { WeatherCard } from "../components/WeatherCard";
 import { TaskList } from "../components/TaskList";
 import { PlantCalendar } from "../components/PlantCalendar";
-import { Link } from "react-router";
 import type { DashboardResponse } from "@repo/types";
 
 export default function Dashboard() {
@@ -36,7 +34,7 @@ export default function Dashboard() {
         Welcome, {user?.firstName || "Gardener"}
       </h1>
 
-      <div className="flex justify-center gap-3">
+      {/* <div className="flex justify-center gap-3">
         <Button className="rounded-full" variant="secondary" asChild>
           <Link to="/growing">Growing</Link>
         </Button>
@@ -44,7 +42,7 @@ export default function Dashboard() {
         <Button className="rounded-full bg-accent3" variant="secondary" asChild>
           <Link to="/planning">Planning</Link>
         </Button>
-      </div>
+      </div> */}
 
       <div className="min-h-1/2 flex flex-col md:flex-row items-stretch mt-6 px-4">
         <LocationCard location={data?.location ?? "London, UK"} />
