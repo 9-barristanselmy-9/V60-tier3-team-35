@@ -7,14 +7,14 @@ import { useAuth } from "@clerk/clerk-react";
 
 interface LocationCardProps {
   location: string;
+  onLocationChange: (location: string) => void;
 }
 
-export function LocationCard({ location }: LocationCardProps) {
+export function LocationCard({ location, onLocationChange }: LocationCardProps) {
   const { userId } = useAuth();
   const { apiClient } = useApiClient();
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState(location);
-  const [displayLocation, setDisplayLocation] = useState(location);
   const [isSaving, setIsSaving] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -30,12 +30,12 @@ export function LocationCard({ location }: LocationCardProps) {
 
     setIsSaving(true);
     setIsEditing(false);
-    setDisplayLocation(draft);
+    onLocationChange(draft);
 
     try {
       await apiClient.patch(`/dashboard/${userId}/location`, { location: draft });
     } catch {
-      setDisplayLocation(location);
+      onLocationChange(location);
     } finally {
       setIsSaving(false);
     }
@@ -52,9 +52,9 @@ export function LocationCard({ location }: LocationCardProps) {
   return (
     <>
       <div className="flex-1 flex flex-col items-start p-6 gap-4">
-        <h2>{displayLocation || "London, UK"} </h2>
+        <h2>{location || "London, UK"} </h2>
         <p>
-          Spring in {displayLocation || "London"} is a wonderful time for
+          Spring in {location || "London"} is a wonderful time for
           gardening!
         </p>
         {isEditing ? (
