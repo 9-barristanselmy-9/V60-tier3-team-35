@@ -12,12 +12,27 @@ const app = express();
 const PORT = Number(process.env.PORT) || 3001;
 
 
-app.use(
-  cors({
-    origin: process.env.CORS_ORIGIN?.split(",") ?? "*",
-    credentials: true,
-  }),
-);
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow no-origin requests (curl, health checks)
+    if (!origin) return callback(null, true);
+    
+    const allowed = (process.env.CORS_ORIGIN ?? '').split(',').map(s => s.trim());
+    
+    // Exact match against allowed origins
+    if (allowed.includes(origin)) return callback(null, true);
+    
+    // Allow Vercel preview deployments (*.vercel.app)
+    try {
+      if (/\.vercel\.app$/.test(new URL(origin).hostname)) {
+        return callback(null, true);
+      }
+    } catch {}
+    
+    callback(new Error('Not allowed by CORS: ' + origin));
+  },
+  credentials: true,
+}));
 app.use(express.json());
 app.use(clerkMiddleware());
 
