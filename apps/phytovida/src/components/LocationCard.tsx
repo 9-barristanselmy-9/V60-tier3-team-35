@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { useFetcher } from "react-router";
 import { Button } from "@repo/ui/components/button";
 import { Input } from "@repo/ui/components/input";
+import { useApiClient } from "@/lib/authFetch";
+import { useAuth } from "@clerk/clerk-react";
 
 
 interface LocationCardProps {
@@ -9,30 +10,35 @@ interface LocationCardProps {
 }
 
 export function LocationCard({ location }: LocationCardProps) {
+  const { userId } = useAuth();
+  const { apiClient } = useApiClient();
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState(location);
-  const fetcher = useFetcher();
+  const [displayLocation, setDisplayLocation] = useState(location);
+  const [isSaving, setIsSaving] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const displayLocation =
-    fetcher.state !== "idle"
-      ? (fetcher.formData?.get("location") as string)
-      : location;
 
   useEffect(() => {
     if (isEditing) inputRef.current?.focus();
   }, [isEditing]);
 
-  function handleSave() {
-    if (!draft.trim() || draft === location) {
+  async function handleSave() {
+    if (!draft.trim() || draft === location || !userId) {
       setIsEditing(false);
       return;
     }
-    fetcher.submit(
-      { location: draft },
-      { method: "PATCH", action: "/api/user/location" }
-    );
+
+    setIsSaving(true);
     setIsEditing(false);
+    setDisplayLocation(draft);
+
+    try {
+      await apiClient.patch(`/api/user/${userId}/location`, { location: draft });
+    } catch {
+      setDisplayLocation(location);
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
@@ -54,34 +60,34 @@ export function LocationCard({ location }: LocationCardProps) {
         {isEditing ? (
           <div className="flex items-center gap-2">
             <Input
-            ref={inputRef}
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="e.g. London, UK"
-            className="w-48"
+              ref={inputRef}
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="e.g. London, UK"
+              className="w-48"
             />
             <Button size="sm" onClick={handleSave}>
               Save
             </Button>
             <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => {
-              setDraft(location);
-              setIsEditing(false);
-            }}
+              size="sm"
+              variant="ghost"
+              onClick={() => {
+                setDraft(location);
+                setIsEditing(false);
+              }}
             >
               Cancel
             </Button>
-            </div>
+          </div>
         ) : (
           <Button
-          className="rounded-fulll bg-accent2"
-          variant="secondary"
-          onClick={() => setIsEditing(true)}
+            className="rounded-fulll bg-accent2"
+            variant="secondary"
+            onClick={() => setIsEditing(true)}
           >
-            {fetcher.state !== "idle" ? "Saving..." : "Change location"}
+            {isSaving ? "Saving..." : "Change location"}
           </Button>
         )}
       </div>
