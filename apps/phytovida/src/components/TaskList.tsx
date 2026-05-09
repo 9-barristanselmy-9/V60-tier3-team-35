@@ -1,32 +1,10 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { useUser } from "@clerk/clerk-react";
 import { Button } from "@repo/ui/components/button";
 import type { DashboardResponse } from "@repo/types";
 
 type Plant = NonNullable<DashboardResponse["plants"]>[number];
 
-
 export function TaskList({ plants }: {plants?: Plant[]}) {
-    // const { user } = useUser();
-    // const [data, setData] = useState<DashboardResponse | null>(null);
-    // const [loading, setLoading] = useState(true);
-
-
-    // useEffect(() => {
-    //     if (!user) return;
-    //     const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
-    //     fetch(`${baseUrl}/dashboard/${user.id}`)
-    //         .then((res) => res.json())
-    //         .then((resData) => {
-    //             setData(resData);
-    //             setLoading(false);
-    //         })
-    //         .catch((err) => console.error("Error:", err));
-    // }, [user]);
-
-    // if (loading) return <div className="p-10 text-center">Loading...</div>;
-
     return (
         <>
              <div className="flex flex-col gap-4 w-full mt-6 px-4">
