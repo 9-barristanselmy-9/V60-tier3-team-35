@@ -50,7 +50,7 @@ export const getPlantByName = async (req: Request, res: Response) => {
     }
 
     const MIN_RESULTS = 5;
-    const MAX_PAGES = 10; // safety cap to avoid hammering Perenual
+    const MAX_PAGES = 5; // safety cap to avoid hammering Perenual
 
     const collected: {
       id: string;
