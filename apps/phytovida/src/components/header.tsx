@@ -97,7 +97,7 @@ export function Header() {
                 to="/"
                 onClick={closeMenu}
               >
-                PythoVida
+                PhytoVida
               </Link></SheetTitle>
             <SheetDescription className="sr-only">Mobile navigation menu</SheetDescription>
             {isSignedIn ? (
